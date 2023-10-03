@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -33,7 +36,9 @@ public class Postagens {
 	@UpdateTimestamp									// Preenchida automaticamente com data e hora do sistema
 	private LocalDateTime data; 						// Configuração para pegar data e hora
 
-	
+	@ManyToOne
+	@JsonIgnoreProperties("postagem")                   // Não dar loop infinito
+	private Tema tema;
 									
 	public Long getId() {
 		return id;
@@ -65,6 +70,14 @@ public class Postagens {
 
 	public void setData(LocalDateTime data) {
 		this.data = data;
+	}
+
+	public Tema getTema() {
+		return tema;
+	}
+
+	public void setTema(Tema tema) {
+		this.tema = tema;
 	}
 	
 	
