@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,7 +25,7 @@ public class Tema {
 	@NotNull(message = "O atributo da descrição é obrigatório")
 	private String descricao;
 	
-	@OneToMany(mappedBy = "tema" , cascade = CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tema" , cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties
 	private List<Postagens> postagem;
 

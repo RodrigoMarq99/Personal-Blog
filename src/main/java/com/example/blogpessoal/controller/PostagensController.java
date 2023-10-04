@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import com.example.blogpessoal.model.Postagens;
 import com.example.blogpessoal.repository.PostagensRepository;
+import com.example.blogpessoal.repository.TemaRepository;
+
 import jakarta.validation.Valid;
 
 @RestController									   // Informar ao Spring que essa classe será um controlador da nossa API Rest
@@ -27,6 +29,10 @@ public class PostagensController {
 
 	@Autowired			// Injeção de dependência do Spring. Traz todos os métodos criados na classe Repository para cá. E como na Repository já possui o JPA, trazemos todos os métodos que ele nos dá por padrão
 	private PostagensRepository postagensRepository;   // Injeção de dependência
+	
+	@Autowired
+	private TemaRepository temaRepository;
+	
 	
 	@GetMapping
 	public ResponseEntity<List<Postagens>> getAll(){
@@ -49,16 +55,24 @@ public class PostagensController {
 	
 	@PostMapping
 	public ResponseEntity<Postagens> post(@Valid @RequestBody Postagens postagem){
+		if (temaRepository.existsById(postagem.getTema().getId())) {
+		
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(postagensRepository.save(postagem));
+		}
+		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null);
 	}
 	
 	@PutMapping
 	public ResponseEntity<Postagens> put(@Valid @RequestBody Postagens postagem){
-		return postagensRepository.findById(postagem.getId())
-				.map(resposta -> ResponseEntity.status(HttpStatus.OK)
-					.body(postagensRepository.save(postagem)))
-				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+		if (postagensRepository.existsById(postagem.getId())) {
+			if (temaRepository.existsById(postagem.getTema().getId())) {
+				return ResponseEntity.status(HttpStatus.OK)
+					.body(postagensRepository.save(postagem));
+			} // verificar chaves do if
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null);
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
