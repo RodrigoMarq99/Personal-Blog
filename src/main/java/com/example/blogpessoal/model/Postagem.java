@@ -17,13 +17,12 @@ import jakarta.validation.constraints.Size;
 
 @Entity  						// Vai transformar minha classe em uma tabela para o banco de dados
 @Table(name = "tb_postagens")   // Criar tabela
-public class Postagens {
+public class Postagem {
 	
 	// Notações precisam estar grudadas com o argumento
 	@Id                         						// O Id configura como chave primária
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-Incremento
 	private Long id; 									// Long é a referência ao bigint do banco de dados
-	
 	
 	@NotBlank(message = "Atributo obrigatório")    		// Não pode ficar vazio
 	@Size(min = 5, max = 255)                           // Tamanho
@@ -39,6 +38,10 @@ public class Postagens {
 	@ManyToOne
 	@JsonIgnoreProperties("postagem")                   // Não dar loop infinito
 	private Tema tema;
+	
+	@ManyToOne
+	@JsonIgnoreProperties("postagem")
+	private Usuario usuario;
 									
 	public Long getId() {
 		return id;
@@ -79,7 +82,13 @@ public class Postagens {
 	public void setTema(Tema tema) {
 		this.tema = tema;
 	}
-	
-	
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 	
 }

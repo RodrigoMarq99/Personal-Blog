@@ -36,8 +36,6 @@ public class TemaController {
 		return ResponseEntity.ok(temaRepository.findAll());
 	}
 	
-	// Achar pelo numero do id
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<Tema> getById(@PathVariable Long id){
 		return temaRepository.findById(id)
